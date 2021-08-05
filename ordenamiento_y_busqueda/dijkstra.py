@@ -1,5 +1,8 @@
 # Crear clase para definir un vertice (nodo)
 
+from typing import List
+
+
 class Nodo:
     # constructor
     def __init__(self, i):
@@ -45,6 +48,7 @@ class Graphic:
                     nodo = n
 
             return nodo
+        return None
 
     def printGraphic(self):  # imprime los costos registrados en la ruta seleccionada
 
@@ -62,7 +66,7 @@ class Graphic:
 
         return [way, self.nodos[des].distancia]
 
-    def dijkstra(self, nodoIni):
+    def dijkstra(self, nodoIni,nodoFin):
         if nodoIni in self.nodos:
             self.nodos[nodoIni].distancia = 0
             act = nodoIni
@@ -79,6 +83,7 @@ class Graphic:
                     # aqui se valida si el vecino esta vsistado o no
                     if self.nodos[nei[0]].visitado == False:
                         if self.nodos[act].distancia + nei[1] < self.nodos[nei[0]].distancia:
+                            #print("esto es nei[1]",nei[1])
                             self.nodos[nei[0]
                                        ].distancia = self.nodos[act].distancia + nei[1]
                             self.nodos[nei[0]].padre = act
@@ -88,6 +93,14 @@ class Graphic:
                 noVisi.remove(act)
 
                 act = self.minimo(noVisi)
+            way = []
+            actual = nodoFin
+
+            while actual != None:  # actua hasta encontrar el nodo orgine que tiene
+                way.insert(0, actual)
+                actual = self.nodos[actual].padre
+
+            return [way, self.nodos[nodoFin].distancia]
         else:
             return False
 
@@ -95,18 +108,26 @@ class Graphic:
 class main:
 
     g = Graphic()
-    LisNod = [1, 2, 3, 4, 5, 6]
+    g1 = Graphic()
+    #LisNod = [1, 2, 3, 4, 5, 6]
+    LisNod= ["n1","n2","n3","n4","n5","n6","n7","n8","n9"]
     for n in LisNod:
         g.appNodo(n)
-
-    lisCon = [1, 6, 14, 1, 2, 7, 1, 3, 9, 2, 3, 10,
-              2, 4, 15, 3, 4, 11, 3, 6, 2, 4, 5, 6, 5, 6, 9]
+        g1.appNodo(n)
+    lisNodAux = LisNod.copy()
+    lisCon = ["n1","n2",2, "n1","n7",7 ,"n2","n5",1 ,"n2","n6",1 ,"n2","n9",2 ,"n4","n6",7 ,"n5","n7",3 ,"n5","n8",1 ,"n6","n8",5 ,"n7","n8",1 ,"n9","n4",6]
+    #lisCon = [1, 6, 14, 1, 2, 7, 1, 3, 9, 2, 3, 10,
+    #         2, 4, 15, 3, 4, 11, 3, 6, 2, 4, 5, 6, 5, 6, 9]
     for i in range(0, len(lisCon) - 1, 3):
-        print(lisCon[i], lisCon[i+1], lisCon[i+2])
+        #print(lisCon[i], lisCon[i+1], lisCon[i+2])
         g.appConnect(lisCon[i], lisCon[i+1], lisCon[i+2])
-
+        g1.appConnect(lisCon[i], lisCon[i+1], lisCon[i+2])
+    
+    
     print("la ruta más rápida por dijkstra junto con su costo es:")
-    g.dijkstra(1)
-    print(g.way(6))
-    print("los valores finales de la grafoca son los siguientes: ")
+    print(g.dijkstra("n1","n4"))
+    print(g1.dijkstra("n4","n1"))
+    #print(g.way("n4"))
+    #print(g1.way("n4"))
+    print("los valores finales de la grafica son los siguientes: ")
     g.printGraphic()
